@@ -33,16 +33,6 @@ function init_project_list() {
   project_list.map((x)=>project_container.appendChild(create_project_div(x)));
 }
 
-// Shows or hides the form for project creation,
-// depending on if the paramter is set
-function show_hide_creation_form(is_vis) {
-  creation_form = document.getElementById('form-container');
-  new_val = "";
-  if (is_vis) {new_val = "visible"}
-  else {new_val = "hidden"}
-  creation_form.style.visibility = new_val;
-}
-
 // Creates a new project 
 // directly gets the value in name field
 function create_project() {

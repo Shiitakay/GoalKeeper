@@ -5,5 +5,4 @@ function show_hide_creation_form(is_vis) {
   if (is_vis) {new_val = "visible"}
   else {new_val = "hidden"}
   creation_form.style.visibility = new_val;
-  
 }
