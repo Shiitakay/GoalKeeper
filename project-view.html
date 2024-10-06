@@ -1,18 +1,23 @@
 <html>
   <head>
-    <link rel="stylesheet" href="css/project-view.css">  
+    <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/project-view.css">
     <!-- title to be set based on viewed project -->
     <title>Project</title>
   </head>
   <body>
     <div class="menu-bar"> 
       <!-- TODO: add proper icons here -->
-      <div class="return-btn">ret</div>
-      <div class="new-goal-btn">goal</div>
+      <div class="return-btn" id="return-btn">ret</div>
+      <div class="new-goal-btn" id="create-btn">goal</div>
     </div>
     <div class="list-container">
-      <div class="uncompleted-list">
-        <div class="goal-block">
+      <div class="uncompleted-list" id="uncompleted-list">
+        <!-- <div class="goal-block">
+          <div class="delete-btn">x</div>
+          <div class="details-btn">x</div>
+          <div class="complete-btn">x</div>
           <h1>Goal name</h1>
           <p>Goal details</p>
         </div>
@@ -52,49 +57,62 @@
           <h1>Goal name</h1>
           <p>Goal details</p>
         </div>
+      </div> -->
+      <div class="completed-list" id="completed-list">
+        <!-- <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p>
+        </div>
+        <div class="goal-block">
+          <h1>Completed Goal name</h1>
+          <p>Completed Goal details</p> 
+        </div> -->
       </div>
-      <div class="completed-list">
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-        <div class="goal-block">
-          <h1>Completed Goal name</h1>
-          <p>Completed Goal details</p>
-        </div>
-      </div>
+    </div>
+    <div class="form-container" id="form-container">
+      <div class="creation-form"> 
+        Goal name: <br>
+        <input type="text" name="goal-name" class="form-name-field" id="form-goal-name"> <br>
+        Goal details: <br>
+        <textarea rows="10" cols="80" id="form-goal-details"></textarea>
+        <!-- <input type="textarea" rows="10" cols="100" name="goal-details" class="form-text-field" id="form-goal-details" wrap="hard"> -->
+        <input type="button" name="create-project" value="Create" class="form-btn" id="form-create">
+        <input type="button" name="cancel-creation" value="Cancel" class="form-btn" id="form-cancel">
+      </div>      
     </div>
   </body>
 </html>
+<script src="script/form.js"></script>
+<script src="script/project-view.js"></script>
