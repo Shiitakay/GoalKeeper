@@ -40,6 +40,16 @@ body {
   background-color: rgb(200, 50, 50);
 }
 
+.details-btn {
+  height: 120px;
+  width: 120px;
+  float: right;
+}
+
+.details-btn:hover {
+  background-color: rgb(100, 155, 255);
+}
+
 .form-container {
   position: absolute;
   visibility: hidden;

@@ -64,6 +64,11 @@ function create_project_div(name_val) {
   new_project_div = document.createElement('div');
   new_project_div.setAttribute("class", "project-details");
 
+  proj_det = document.createElement('div');
+  proj_det.setAttribute("class", "details-btn");
+  new_project_div.appendChild(proj_det);
+  proj_det.addEventListener('click', details_btn_closure(proj_det));
+
   proj_del = document.createElement('div');
   proj_del.setAttribute("class", "delete-btn");
   new_project_div.appendChild(proj_del);
@@ -84,6 +89,21 @@ function create_project_div(name_val) {
   }
   new_project_div.remove();
   return new_project_div;
+}
+
+
+// Creates a closure for details buttons
+// used for addEvenListener on details buttons
+function details_btn_closure(to_redir) {
+  to_redir;
+  return ()=>{redir_to_proj(to_redir)};
+}
+
+function redir_to_proj(to_redir) {
+  proj_name = to_redir.parentNode.querySelector('h1');
+  url = "./project-view.html";
+  url += "?project-name=" + proj_name.innerText;
+  location.replace(url);
 }
 
 // Creates a closure for delete buttons
