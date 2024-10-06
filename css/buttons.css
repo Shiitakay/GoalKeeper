@@ -1,0 +1,41 @@
+.delete-btn {
+  right: 0;
+  height: 120px;
+  width: 120px;
+  float: right;
+}
+
+.delete-btn:hover {
+  background-color: rgb(200, 50, 50);
+}
+
+.details-btn {
+  height: 120px;
+  width: 120px;
+  float: right;
+}
+
+.details-btn:hover {
+  background-color: rgb(100, 155, 255);
+}
+
+.complete-btn {
+  height: 120px;
+  width: 120px;
+  float:right;
+}
+
+.complete-btn:hover {
+  background-color: rgb(100, 155, 255);
+}
+
+.uncomplete-btn {
+  display: none;
+  height: 120px;
+  width: 120px;
+  float: right;
+}
+
+.uncomplete-btn:hover {
+  background-color: white;
+}
