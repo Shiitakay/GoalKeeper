@@ -20,7 +20,24 @@ body {
 
 .project-details {
   width: 100%;
+  height: 120px;
   border-bottom: 1px solid gray;
+  overflow: hidden;
+}
+
+.project-details > h1 {
+  margin: 0px;
+}
+
+.delete-btn {
+  right: 0;
+  height: 120px;
+  width: 120px;
+  float: right;
+}
+
+.delete-btn:hover {
+  background-color: rgb(200, 50, 50);
 }
 
 .form-container {
