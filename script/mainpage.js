@@ -12,6 +12,29 @@ cancel_btn.addEventListener('click', create_project);
 delete_btns = Array.from(document.getElementsByClassName('delete-btn'));
 delete_btns.map((x)=>x.addEventListener('click', ()=>{delete_proj(x)}));
 
+project_list = [];
+next_project_id = 0; //this is next avaliable name, not the actual count
+try {
+  project_list = JSON.parse(localStorage.getItem("projects"));
+  next_project_id = JSON.parse(localStorage.getItem("next_project_id"));
+  if (project_list === null) {
+    project_list = [];
+  }
+  if (next_project_id === null) {
+    next_project_id = 0;
+  }
+} catch (e) {}
+document.addEventListener('DOMContentLoaded', init_project_list);
+
+// Creates project detail panels from the list in localstorage
+function init_project_list() {
+  if (project_list.length === 0) {return;}
+  project_container = document.getElementById('project-list');
+  project_list.map((x)=>project_container.appendChild(create_project_div(x)));
+}
+
+// Shows or hides the form for project creation,
+// depending on if the paramter is set
 function show_hide_creation_form(is_vis) {
   creation_form = document.getElementById('form-container');
   new_val = "";
@@ -20,15 +43,23 @@ function show_hide_creation_form(is_vis) {
   creation_form.style.visibility = new_val;
 }
 
+// Creates a new project 
+// directly gets the value in name field
 function create_project() {
   name_val = document.getElementById('form-proj-name').value;
+  if (name_val === "") {name_val = "Project " + next_project_id}
   new_proj = create_project_div(name_val);
+  project_list.push(name_val);
   proj_container = document.getElementById('project-list');
-  proj_container.appendChild(new_proj); 
+  proj_container.appendChild(new_proj);
+  console.log(JSON.stringify(project_list));
+  localStorage.setItem("projects", JSON.stringify(project_list));
+  next_project_id += 1;
+  localStorage.setItem("next_project_id", JSON.stringify(next_project_id));
 }
 
-//Creates, populates and returns a new div element
-//with class project-details
+// Creates, populates and returns a new div element
+// with class project-details
 function create_project_div(name_val) {
   new_project_div = document.createElement('div');
   new_project_div.setAttribute("class", "project-details");
@@ -55,14 +86,19 @@ function create_project_div(name_val) {
   return new_project_div;
 }
 
-// creates a closure for delete buttons
+// Creates a closure for delete buttons
 // used for addEventListener on delete buttons
 function del_btn_closure(to_del) {
   to_del;
   return ()=>{delete_proj(to_del)};
 }
 
-// Given a button, removes its parent node
+// Given a button, removes the project from the html
+// and the project list in localstorage
 function delete_proj(del_button) {
+  proj_name = del_button.parentNode.querySelector('h1');
+  del_proj_index= project_list.indexOf(proj_name.innerText);
+  project_list.splice(del_proj_index, 1);
   del_button.parentNode.remove();
+  localStorage.setItem("projects", JSON.stringify(project_list));
 }
