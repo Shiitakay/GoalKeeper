@@ -14,6 +14,38 @@ function return_to_mainpage() {
   location.replace("mainpage.html");
 }
 
+const params = new URLSearchParams(window.location.search);
+const project_name = params.get("project-name");
+goals_list = JSON.parse(localStorage.getItem(project_name));
+/* local storage should look like this
+  project-name : [
+    {
+      goal_name:
+      goal_details:
+      is_completed:
+    }, ...
+  ]
+*/
+
+document.addEventListener('DOMContentLoaded', init);
+
+function init() {
+  if (goals_list === null) {
+    goals_list = [];
+  } else {
+    goals_list.map((x)=>{create_init_goal(x)});
+  }
+  console.log(goals_list);
+}
+
+function create_init_goal(goal_dict) {
+  new_goal = create_goal_div(goal_dict["goal_name"], goal_dict["goal_details"]);
+  document.getElementById("uncompleted-list").appendChild(new_goal);
+  if (goal_dict["is_completed"]) {
+    complete_goal(new_goal.querySelector(".complete-btn"), false);
+  }
+}
+
 function create_goal() {
   goal_name = document.getElementById("form-goal-name").value;
   if (goal_name === "") {goal_name = "placeholder"}
@@ -21,6 +53,8 @@ function create_goal() {
   if (goal_details === "") {goal_details = "placeholder"};
   new_goal_div = create_goal_div(goal_name, goal_details);
   document.getElementById("uncompleted-list").appendChild(new_goal_div);
+  goals_list.push({"goal_name": goal_name, "goal_details": goal_details, "is_completed": false});
+  localStorage.setItem(project_name, JSON.stringify(goals_list));
 }
 
 function create_goal_div(goal_name, goal_details) {
@@ -62,7 +96,11 @@ function del_btn_closure(to_del) {
 
 // Removes the given delete button's parent node
 function delete_goal(to_del) {
+  goal_name = to_del.parentNode.querySelector("h1").innerText;
+  del_index = goals_list.findIndex((x) => x["goal_name"] === goal_name);
+  goals_list.splice(del_index, 1);
   to_del.parentNode.remove();
+  localStorage.setItem(project_name, JSON.stringify(goals_list));
 }
 
 function com_btn_closure(to_com) {
@@ -107,4 +145,17 @@ function swap_lists(to_swap, completed) {
   }
   remove_from.removeChild(goal_div);
   add_to.appendChild(goal_div);
+  goal_dict = swap_goal_dict(goal_div);
+  console.log(goals_list.map((x)=>x["goal_name"]));
+  replace_index = goals_list.findIndex((x) => x["goal_name"] === goal_dict["goal_name"]);
+  goals_list[replace_index] = goal_dict;
+  localStorage.setItem(project_name, JSON.stringify(goals_list));
+  console.log(goals_list);
+}
+
+function swap_goal_dict(goal) {
+  goal_name = goal.querySelector("h1").innerText;
+  goal_details = goal.querySelector("p").innerText;
+  is_completed = !(goal.querySelector(".complete-btn").style.display === "none");
+  return {"goal_name": goal_name, "goal_details": goal_details, "is_completed": is_completed};
 }
