@@ -1,11 +1,3 @@
-* {
-  font-family: sans-serif;
-}
-
-body {
-  margin: 0px 0px;
-}
-
 .new-project-btn {
   padding: 1px;
   background-color: rgb(100, 155, 255);
@@ -19,28 +11,28 @@ body {
   box-shadow: 5px 5px 10px gray;
 }
 
-/* Contains project buttons */
-.project-list {
-  width: 100%;
-}
-
 .project-details {
-  width: 100%;
   height: 120px;
+  padding-left: 10px;
   border-bottom: 1px solid gray;
-  overflow: hidden;
 }
 
+/* both name and details */
+.project-text-field {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Project names */
 .project-details > h1 {
   margin: 0px;
+  height: 60px;
+  line-height: 60px;
+  font-weight: bolder;
 }
 
-/* buttons on projects*/
-.project-details > div:hover {
-  cursor: pointer;
-}
-
-/* button icons */
-.project-details > div > svg:hover {
-  fill:white;
+/* Next goals */
+.project-details > p {
+  height: 40px;
 }

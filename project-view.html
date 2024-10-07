@@ -1,5 +1,6 @@
 <html>
   <head>
+    <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/project-view.css">
@@ -8,15 +9,14 @@
   </head>
   <body>
     <div class="menu-bar"> 
-      <!-- TODO: add proper icons here -->
-      <div class="return-btn" id="return-btn">
+      <div class="base-btn return-btn" id="return-btn">
         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 300 300">
           <rect class="cls-1" x="40" y="30" width="220" height="60"/>
           <rect class="cls-1" x="40" y="120" width="220" height="60"/>
           <rect class="cls-1" x="40" y="210" width="220" height="60"/>
         </svg>
       </div>
-      <div class="new-goal-btn" id="create-btn">
+      <div class="base-btn new-goal-btn" id="create-btn">
         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 300 300">
           <rect class="cls-1" x="40" y="120" width="220" height="60"/>
           <rect class="cls-1" x="120" y="40" width="60" height="220"/>
@@ -113,7 +113,7 @@
       </div>
     </div>
     <div class="form-container" id="form-container">
-      <div class="creation-form"> 
+      <div class="creation-form" id="creation-form"> 
         Goal name: <br>
         <input type="text" name="goal-name" class="form-name-field" id="form-goal-name"> <br>
         Goal details: <br>

@@ -1,17 +1,5 @@
-proj_btn = document.getElementById('new-project-btn');
-proj_btn.addEventListener('click', ()=>{show_hide_creation_form(true)});
-
-cancel_btn = document.getElementById('form-cancel');
-cancel_btn.addEventListener('click', ()=>{show_hide_creation_form(false)});
-
-cancel_btn = document.getElementById('form-create');
-cancel_btn.addEventListener('click', create_project);
-
-delete_btns = Array.from(document.getElementsByClassName('delete-btn'));
-delete_btns.map((x)=>x.addEventListener('click', ()=>{delete_proj(x)}));
-
-project_list = [];
-next_project_id = 0;
+project_list = []; // Modifed whereever localstorage is set
+next_project_id = 0; // Modified only in create_project_div
 /* localStorage should look like this
   [
     {
@@ -27,7 +15,22 @@ try {
     project_list = [];
   }
 } catch (e) {}
-document.addEventListener('DOMContentLoaded', init_project_list);
+document.addEventListener('DOMContentLoaded', init);
+
+function init() {
+  init_buttons();
+  init_project_list();
+}
+
+function init_buttons() {
+  create_form = document.getElementById("creation-form")
+  proj_btn = document.getElementById('new-project-btn');
+  proj_btn.addEventListener('click', ()=>{show_hide_form(create_form, true)});
+  cancel_btn = document.getElementById('form-cancel');
+  cancel_btn.addEventListener('click', ()=>{show_hide_form(create_form, false)});
+  create_btn = document.getElementById('form-create');
+  create_btn.addEventListener('click', create_project);
+}
 
 // Creates project detail panels from the list in localstorage
 function init_project_list() {
@@ -39,6 +42,7 @@ function init_project_list() {
 
 // Creates a new project 
 // directly gets the value in name field
+// Called on form create button click
 function create_project() {
   name_val = document.getElementById('form-proj-name').value;
   if (name_val === "") {name_val = "Project " + next_project_id}
@@ -65,25 +69,27 @@ function create_project_div(name_val, id = -1) {
   new_project_div.setAttribute("id", id);
 
   proj_det = document.createElement('div');
-  proj_det.setAttribute("class", "details-btn");
+  proj_det.setAttribute("class", "base-btn details-btn");
   proj_det.appendChild(make_arrow());
   new_project_div.appendChild(proj_det);
   proj_det.addEventListener('click', details_btn_closure(proj_det));
 
   proj_del = document.createElement('div');
-  proj_del.setAttribute("class", "delete-btn");
+  proj_del.setAttribute("class", "base-btn delete-btn");
   proj_del.appendChild(make_cross());
   new_project_div.appendChild(proj_del);
   proj_del.addEventListener('click', del_btn_closure(proj_del));
 
   proj_h1 = document.createElement('h1');
+  proj_h1.setAttribute("class", "project-text-field")
   if (name_val === "") {proj_h1.innerText = "New project";}
   else {proj_h1.innerText = name_val;}
   
   new_project_div.appendChild(proj_h1);
 
   proj_p = document.createElement('p');
-  proj_p.innerText = "Test paragraph";
+  proj_p.setAttribute("class", "project-text-field")
+  proj_p.innerText = "No goals left!";
   new_project_div.appendChild(proj_p);
   new_project_div.remove();
   return {
@@ -101,6 +107,7 @@ function details_btn_closure(to_redir) {
   return ()=>{redir_to_proj(to_redir)};
 }
 
+// Called on clicking project details buttons
 function redir_to_proj(to_redir) {
   proj_id = to_redir.parentNode.id;
   url = "./project-view.html";
@@ -117,6 +124,7 @@ function del_btn_closure(to_del) {
 
 // Given a button, removes the project from the html
 // and the project list in localstorage
+// Called on clicking project delete buttons
 function delete_proj(del_button) {
   proj_id = del_button.parentNode.id;
   del_proj_index = project_list.findIndex((x) => x["id"] == proj_id);

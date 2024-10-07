@@ -1,14 +1,4 @@
-back_btn = document.getElementById("return-btn");
-back_btn.addEventListener("click", return_to_mainpage);
 
-new_btn = document.getElementById("create-btn");
-new_btn.addEventListener('click', ()=>show_hide_creation_form(true));
-
-cancel_btn = document.getElementById("form-cancel");
-cancel_btn.addEventListener('click', ()=>show_hide_creation_form(false));
-
-create_btn = document.getElementById("form-create");
-create_btn.addEventListener('click', create_goal);
 
 function return_to_mainpage() {
   location.replace("mainpage.html");
@@ -32,13 +22,25 @@ goals_list = JSON.parse(localStorage.getItem(project_id));
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  init_buttons();
   console.log(goals_list);
   if (goals_list === null) {
     goals_list = [];
   } else {
     goals_list.map((x)=>{create_init_goal(x)});
   }
-  console.log(goals_list);
+}
+
+function init_buttons(){
+  back_btn = document.getElementById("return-btn");
+  back_btn.addEventListener("click", return_to_mainpage);
+  create_form = document.getElementById("creation-form");
+  new_btn = document.getElementById("create-btn");
+  new_btn.addEventListener('click', ()=>show_hide_form(create_form, true));
+  cancel_btn = document.getElementById("form-cancel");
+  cancel_btn.addEventListener('click', ()=>show_hide_form(create_form, false));
+  create_btn = document.getElementById("form-create");
+  create_btn.addEventListener('click', create_goal);
 }
 
 function create_init_goal(goal_dict) {
@@ -76,29 +78,32 @@ function create_goal_div(goal_name, goal_details, id = -1) {
   new_goal_div.setAttribute("id", id);
 
   new_goal_del = document.createElement("div");
-  new_goal_del.setAttribute("class", "delete-btn");
+  new_goal_del.setAttribute("class", "base-btn delete-btn");
   new_goal_del.appendChild(make_cross());
   new_goal_del.addEventListener('click', del_btn_closure(new_goal_del));
   new_goal_div.appendChild(new_goal_del);
 
   new_goal_com = document.createElement("div");
-  new_goal_com.setAttribute("class", "complete-btn");
+  new_goal_com.setAttribute("class", "base-btn complete-btn");
   new_goal_com.appendChild(make_tick());
   new_goal_com.addEventListener("click", com_btn_closure(new_goal_com));
   new_goal_div.appendChild(new_goal_com);
 
   new_goal_uncom = document.createElement("div");
-  new_goal_uncom.setAttribute("class", "uncomplete-btn");
+  new_goal_uncom.setAttribute("class", "base-btn uncomplete-btn");
+  new_goal_uncom.style.display = "none";
   new_goal_uncom.appendChild(make_tick());
   new_goal_uncom.addEventListener("click", uncom_btn_closure(new_goal_uncom));
   new_goal_div.appendChild(new_goal_uncom);
 
   new_goal_h1 = document.createElement('h1');
+  new_goal_h1.setAttribute("class", "goal-text-field");
   if (goal_name === "") {new_goal_h1.innerText = "New project";}
   else {new_goal_h1.innerText = goal_name;}
   new_goal_div.appendChild(new_goal_h1);
 
   new_goal_p = document.createElement('p');
+  new_goal_p.setAttribute("class", "goal-text-field");
   if (goal_details === "") {new_goal_p.innerText = "Placeholder description";}
   else {new_goal_p.innerText = goal_details;}
   new_goal_div.appendChild(new_goal_p);
