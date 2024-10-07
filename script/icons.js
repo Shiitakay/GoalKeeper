@@ -46,3 +46,15 @@ function make_tick() {
   svg.appendChild(rect2);
   return svg;
 }
+
+function make_arrow() {
+  svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 300 300");
+
+  //  <polygon class="cls-1" points="243.6 150 56.4 43.9 56.4 256.1 243.6 150"/>
+  tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  tri.setAttribute("points", "243.6 150 56.4 43.9 56.4 256.1 243.6 150");
+
+  svg.appendChild(tri);
+  return svg;
+}
