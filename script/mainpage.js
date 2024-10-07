@@ -30,6 +30,9 @@ function init_buttons() {
   cancel_btn.addEventListener('click', ()=>{show_hide_form(create_form, false)});
   create_btn = document.getElementById('form-create');
   create_btn.addEventListener('click', create_project);
+  edit_form = document.getElementById("edit-form");
+  cancel_edit_btn = document.getElementById("edit-form-cancel");
+  cancel_edit_btn.addEventListener("click", ()=>show_hide_form(edit_form, false));
 }
 
 // Creates project detail panels from the list in localstorage
@@ -73,6 +76,12 @@ function create_project_div(name_val, id = -1) {
   proj_det.appendChild(make_arrow());
   new_project_div.appendChild(proj_det);
   proj_det.addEventListener('click', details_btn_closure(proj_det));
+
+  proj_edit = document.createElement("div");
+  proj_edit.setAttribute("class", "base-btn");
+  proj_edit.appendChild(make_edit());
+  new_project_div.appendChild(proj_edit);
+  proj_edit.addEventListener("click", edit_btn_closure(proj_edit));
 
   proj_del = document.createElement('div');
   proj_del.setAttribute("class", "base-btn delete-btn");
@@ -131,5 +140,27 @@ function delete_proj(del_button) {
   project_list.splice(del_proj_index, 1);
   del_button.parentNode.remove();
   localStorage.removeItem(proj_id);
+  localStorage.setItem("projects", JSON.stringify(project_list));
+}
+
+function edit_btn_closure(edit_btn) {
+  return ()=>edit_proj(edit_btn);
+}
+
+function edit_proj(edit_btn) {
+  show_hide_form(document.getElementById("edit-form"), true);
+  form_edit_btn = document.getElementById("edit-form-create");
+  to_edit = edit_btn.parentNode;  
+  form_edit_btn.addEventListener("click", ()=>change_proj(to_edit));
+}
+
+function change_proj(to_edit) {
+  old_name_field = to_edit.querySelector("h1");
+  new_name = document.getElementById("edit-form-name").value;
+  if (new_name === "") {new_name = old_name_field.innerText;}
+  old_name_field.innerText = new_name;
+  show_hide_form(document.getElementById("edit-form"), false);
+  proj_index = project_list.findIndex((x) => x["id"] == to_edit.id);
+  project_list[proj_index]["name"] = new_name;
   localStorage.setItem("projects", JSON.stringify(project_list));
 }
