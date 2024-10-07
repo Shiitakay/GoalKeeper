@@ -1,41 +1,26 @@
-.delete-btn {
-  right: 0;
+.base-btn {
   height: 120px;
   width: 120px;
   float: right;
+}
+
+.base-btn > svg {
+  fill: rgb(100, 155, 255);
+}
+
+.base-btn:hover {
+  cursor: pointer;
+  background-color: rgb(100, 155, 255);
+}
+
+.base-btn > svg:hover {
+  fill: white;
 }
 
 .delete-btn:hover {
   background-color: rgb(200, 50, 50);
 }
 
-.details-btn {
-  height: 120px;
-  width: 120px;
-  float: right;
-}
-
-.details-btn:hover {
-  background-color: rgb(100, 155, 255);
-}
-
-.complete-btn {
-  height: 120px;
-  width: 120px;
-  float:right;
-}
-
-.complete-btn:hover {
-  background-color: rgb(100, 155, 255);
-}
-
-.uncomplete-btn {
-  display: none;
-  height: 120px;
-  width: 120px;
-  float: right;
-}
-
-.uncomplete-btn:hover {
-  background-color: rgb(100, 155, 255);
+.delete-btn > svg {
+  fill: rgb(200, 50, 50);
 }

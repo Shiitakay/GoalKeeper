@@ -1,7 +1,5 @@
-function show_hide_creation_form(is_vis) {
-  creation_form = document.getElementById('form-container');
-  new_val = "";
-  if (is_vis) {new_val = "visible"}
-  else {new_val = "hidden"}
-  creation_form.style.visibility = new_val;
+// Given a form, sets its visibility to the given val
+// It sets the visibility of the forms container
+function show_hide_form(node, is_vis) {
+  node.parentNode.style.visibility = is_vis ? "visible" : "hidden";
 }
