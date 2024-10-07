@@ -40,7 +40,7 @@ function init_project_list() {
   if (project_list.length === 0) {return;}
   project_container = document.getElementById('project-list');
   project_list.map((x)=>{
-    project_container.appendChild(create_project_div(x["name"], x["id"])["div"])});
+    project_container.appendChild(init_create_project_div(x["name"], x["id"])["div"])});
 }
 
 // Creates a new project 
@@ -56,6 +56,19 @@ function create_project() {
 
   project_list.push({"id": new_dict["id"], "name": new_dict["name"]});
   localStorage.setItem("projects", JSON.stringify(project_list));
+}
+
+function init_create_project_div(name_val, id) {
+  proj_dict = create_project_div(name_val, id);
+  proj_div = proj_dict["div"];
+  //get projects goals
+  goal_list = JSON.parse(localStorage.getItem(proj_dict["id"]));
+  if (goal_list === null) {return proj_dict};
+  //get first uncompleted goal
+  first_goal_index = goal_list.findIndex((x)=>x["is_completed"] === false);
+  goal_field = proj_dict["div"].querySelector("p");
+  goal_field.innerText = goal_list[first_goal_index]["goal_name"];
+  return proj_dict;
 }
 
 // Creates, populates and returns a new div element
