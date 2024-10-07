@@ -14,7 +14,7 @@
 .project-details {
   height: 120px;
   padding-left: 10px;
-  border-bottom: 1px solid gray;
+  border-bottom: 5px solid gray;
 }
 
 /* both name and details */

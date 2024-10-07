@@ -66,8 +66,20 @@ function init_create_project_div(name_val, id) {
   if (goal_list === null) {return proj_dict};
   //get first uncompleted goal
   first_goal_index = goal_list.findIndex((x)=>x["is_completed"] === false);
-  goal_field = proj_dict["div"].querySelector("p");
-  goal_field.innerText = goal_list[first_goal_index]["goal_name"];
+  console.log(first_goal_index);
+  if (first_goal_index != -1) {
+    goal_field = proj_dict["div"].querySelector("p");
+    goal_field.innerText = goal_list[first_goal_index]["goal_name"];    
+  }
+
+  //set the progress meter
+  comp = " " + 100*(goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length) + "%, ";
+  col1 = " rgb(100, 155, 255) ";
+  col2 = " gray ";
+  // "linear-gradient(to right,"+col1+","+col1+comp+col2+comp+","+col2+") 10 1";
+  proj_div.style.borderImage =  "linear-gradient(to right,"+col1+","+col1+comp+col2+comp+col2+") 10 1";
+  // proj_div.style.borderImage = "linear-gradient(to right, #e66465, #e66465 " + comp + ", #9198e5 " + comp + ", #9198e5) 10 1";
+  console.log("linear-gradient(to right,"+col1+","+col1+comp+col2+comp+","+col2+") 10 1");
   return proj_dict;
 }
 
