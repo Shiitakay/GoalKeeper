@@ -66,11 +66,13 @@ function create_project_div(name_val, id = -1) {
 
   proj_det = document.createElement('div');
   proj_det.setAttribute("class", "details-btn");
+  proj_det.appendChild(make_arrow());
   new_project_div.appendChild(proj_det);
   proj_det.addEventListener('click', details_btn_closure(proj_det));
 
   proj_del = document.createElement('div');
   proj_del.setAttribute("class", "delete-btn");
+  proj_del.appendChild(make_cross());
   new_project_div.appendChild(proj_del);
   proj_del.addEventListener('click', del_btn_closure(proj_del));
 

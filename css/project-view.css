@@ -74,6 +74,11 @@ body {
   margin: 10px;
 }
 
+/* buttons inside goals */
+.goal-block > div:hover {
+  cursor: pointer;
+}
+
 /* button icons */
 .goal-block > div > svg {
   fill: black;
