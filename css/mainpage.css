@@ -9,6 +9,7 @@
   cursor: pointer;
   background-color: rgb(135, 180, 255);
   box-shadow: 5px 5px 10px gray;
+}
 
 .project-details {
   height: 120px;
@@ -34,3 +35,4 @@
 /* Next goals */
 .project-details > p {
   height: 40px;
+}
