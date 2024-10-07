@@ -14,12 +14,14 @@ function return_to_mainpage() {
   location.replace("mainpage.html");
 }
 
+next_goal_id = 0;
 const params = new URLSearchParams(window.location.search);
-const project_name = params.get("project-name");
-goals_list = JSON.parse(localStorage.getItem(project_name));
+const project_id = params.get("project-id");
+goals_list = JSON.parse(localStorage.getItem(project_id));
 /* local storage should look like this
-  project-name : [
+  project-id : [
     {
+      goal_id:
       goal_name:
       goal_details:
       is_completed:
@@ -30,6 +32,7 @@ goals_list = JSON.parse(localStorage.getItem(project_name));
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  console.log(goals_list);
   if (goals_list === null) {
     goals_list = [];
   } else {
@@ -39,10 +42,10 @@ function init() {
 }
 
 function create_init_goal(goal_dict) {
-  new_goal = create_goal_div(goal_dict["goal_name"], goal_dict["goal_details"]);
-  document.getElementById("uncompleted-list").appendChild(new_goal);
+  new_goal_dict = create_goal_div(goal_dict["goal_name"], goal_dict["goal_details"], goal_dict["goal_id"]);
+  document.getElementById("uncompleted-list").appendChild(new_goal_dict["div"]);
   if (goal_dict["is_completed"]) {
-    complete_goal(new_goal.querySelector(".complete-btn"), false);
+    complete_goal(new_goal_dict["div"].querySelector(".complete-btn"), false);
   }
 }
 
@@ -51,15 +54,26 @@ function create_goal() {
   if (goal_name === "") {goal_name = "placeholder"}
   goal_details = document.getElementById("form-goal-details").value;
   if (goal_details === "") {goal_details = "placeholder"};
-  new_goal_div = create_goal_div(goal_name, goal_details);
-  document.getElementById("uncompleted-list").appendChild(new_goal_div);
-  goals_list.push({"goal_name": goal_name, "goal_details": goal_details, "is_completed": false});
-  localStorage.setItem(project_name, JSON.stringify(goals_list));
+  new_goal_dict = create_goal_div(goal_name, goal_details);
+  document.getElementById("uncompleted-list").appendChild(new_goal_dict["div"]);
+  goals_list.push({
+    "goal_id": new_goal_dict["id"], 
+    "goal_name": goal_name, 
+    "goal_details": goal_details, 
+    "is_completed": false});
+  localStorage.setItem(project_id, JSON.stringify(goals_list));
 }
 
-function create_goal_div(goal_name, goal_details) {
+function create_goal_div(goal_name, goal_details, id = -1) {
   new_goal_div = document.createElement("div");
   new_goal_div.setAttribute("class", "goal-block");
+  if (id === -1) { //if id wasnt supplied, generate one
+    id = next_goal_id;
+    next_goal_id += 1;
+  } else if (id >= next_goal_id) {
+    next_goal_id = id+1;
+  }
+  new_goal_div.setAttribute("id", id);
 
   new_goal_del = document.createElement("div");
   new_goal_del.setAttribute("class", "delete-btn");
@@ -89,7 +103,11 @@ function create_goal_div(goal_name, goal_details) {
   else {new_goal_p.innerText = goal_details;}
   new_goal_div.appendChild(new_goal_p);
 
-  return new_goal_div;
+  return {
+    "id": id,
+    "goal_name": goal_name,
+    "goal_details": goal_details,
+    "div": new_goal_div};
 }
 
 function del_btn_closure(to_del) {
@@ -99,11 +117,11 @@ function del_btn_closure(to_del) {
 
 // Removes the given delete button's parent node
 function delete_goal(to_del) {
-  goal_name = to_del.parentNode.querySelector("h1").innerText;
-  del_index = goals_list.findIndex((x) => x["goal_name"] === goal_name);
+  goal_id = to_del.parentNode.id;
+  del_index = goals_list.findIndex((x) => x["goal_id"] == goal_id);
   goals_list.splice(del_index, 1);
   to_del.parentNode.remove();
-  localStorage.setItem(project_name, JSON.stringify(goals_list));
+  localStorage.setItem(project_id, JSON.stringify(goals_list));
 }
 
 function com_btn_closure(to_com) {
@@ -148,12 +166,10 @@ function swap_lists(to_swap, completed) {
   }
   remove_from.removeChild(goal_div);
   add_to.appendChild(goal_div);
-  goal_dict = swap_goal_dict(goal_div);
-  console.log(goals_list.map((x)=>x["goal_name"]));
-  replace_index = goals_list.findIndex((x) => x["goal_name"] === goal_dict["goal_name"]);
-  goals_list[replace_index] = goal_dict;
-  localStorage.setItem(project_name, JSON.stringify(goals_list));
-  console.log(goals_list);
+  swap_goal_id = to_swap.parentNode.id;
+  replace_index = goals_list.findIndex((x) => x["goal_id"] == swap_goal_id);
+  goals_list[replace_index]["is_completed"] = !completed;
+  localStorage.setItem(project_id, JSON.stringify(goals_list));
 }
 
 function swap_goal_dict(goal) {
