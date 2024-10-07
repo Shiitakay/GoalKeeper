@@ -1,5 +1,3 @@
-const debug = 1;
-
 proj_btn = document.getElementById('new-project-btn');
 proj_btn.addEventListener('click', ()=>{show_hide_creation_form(true)});
 
@@ -13,15 +11,20 @@ delete_btns = Array.from(document.getElementsByClassName('delete-btn'));
 delete_btns.map((x)=>x.addEventListener('click', ()=>{delete_proj(x)}));
 
 project_list = [];
-next_project_id = 0; //this is next avaliable name, not the actual count
+next_project_id = 0;
+/* localStorage should look like this
+  [
+    {
+      id:
+      name:
+    },
+  ]
+*/
+
 try {
   project_list = JSON.parse(localStorage.getItem("projects"));
-  next_project_id = JSON.parse(localStorage.getItem("next_project_id"));
   if (project_list === null) {
     project_list = [];
-  }
-  if (next_project_id === null) {
-    next_project_id = 0;
   }
 } catch (e) {}
 document.addEventListener('DOMContentLoaded', init_project_list);
@@ -30,7 +33,8 @@ document.addEventListener('DOMContentLoaded', init_project_list);
 function init_project_list() {
   if (project_list.length === 0) {return;}
   project_container = document.getElementById('project-list');
-  project_list.map((x)=>project_container.appendChild(create_project_div(x)));
+  project_list.map((x)=>{
+    project_container.appendChild(create_project_div(x["name"], x["id"])["div"])});
 }
 
 // Creates a new project 
@@ -38,21 +42,27 @@ function init_project_list() {
 function create_project() {
   name_val = document.getElementById('form-proj-name').value;
   if (name_val === "") {name_val = "Project " + next_project_id}
-  new_proj = create_project_div(name_val);
-  project_list.push(name_val);
+  new_dict = create_project_div(name_val);
+  new_proj = new_dict["div"];
   proj_container = document.getElementById('project-list');
   proj_container.appendChild(new_proj);
-  console.log(JSON.stringify(project_list));
+
+  project_list.push({"id": new_dict["id"], "name": new_dict["name"]});
   localStorage.setItem("projects", JSON.stringify(project_list));
-  next_project_id += 1;
-  localStorage.setItem("next_project_id", JSON.stringify(next_project_id));
 }
 
 // Creates, populates and returns a new div element
 // with class project-details
-function create_project_div(name_val) {
+function create_project_div(name_val, id = -1) {
   new_project_div = document.createElement('div');
   new_project_div.setAttribute("class", "project-details");
+  if (id === -1) { //if id wasnt supplied, generate one
+    id = next_project_id;
+    next_project_id += 1;
+  } else if (id >= next_project_id) {
+    next_project_id = id+1;
+  }
+  new_project_div.setAttribute("id", id);
 
   proj_det = document.createElement('div');
   proj_det.setAttribute("class", "details-btn");
@@ -73,12 +83,12 @@ function create_project_div(name_val) {
   proj_p = document.createElement('p');
   proj_p.innerText = "Test paragraph";
   new_project_div.appendChild(proj_p);
-  if (debug) {
-    console.log(new_project_div);
-    console.log(delete_btns);
-  }
   new_project_div.remove();
-  return new_project_div;
+  return {
+    id: id,
+    name: name_val,
+    div: new_project_div
+  };
 }
 
 
@@ -90,9 +100,9 @@ function details_btn_closure(to_redir) {
 }
 
 function redir_to_proj(to_redir) {
-  proj_name = to_redir.parentNode.querySelector('h1');
+  proj_id = to_redir.parentNode.id;
   url = "./project-view.html";
-  url += "?project-name=" + proj_name.innerText;
+  url += "?project-id=" + proj_id;
   location.replace(url);
 }
 
@@ -106,9 +116,10 @@ function del_btn_closure(to_del) {
 // Given a button, removes the project from the html
 // and the project list in localstorage
 function delete_proj(del_button) {
-  proj_name = del_button.parentNode.querySelector('h1');
-  del_proj_index= project_list.indexOf(proj_name.innerText);
+  proj_id = del_button.parentNode.id;
+  del_proj_index = project_list.findIndex((x) => x["id"] == proj_id);
   project_list.splice(del_proj_index, 1);
   del_button.parentNode.remove();
+  localStorage.removeItem(proj_id);
   localStorage.setItem("projects", JSON.stringify(project_list));
 }
