@@ -62,17 +62,20 @@ function create_goal_div(goal_name, goal_details) {
   new_goal_div.setAttribute("class", "goal-block");
 
   new_goal_del = document.createElement("div");
-  new_goal_del.setAttribute("class", "delete-btn")
+  new_goal_del.setAttribute("class", "delete-btn");
+  new_goal_del.appendChild(make_cross());
   new_goal_del.addEventListener('click', del_btn_closure(new_goal_del));
   new_goal_div.appendChild(new_goal_del);
 
   new_goal_com = document.createElement("div");
   new_goal_com.setAttribute("class", "complete-btn");
+  new_goal_com.appendChild(make_tick());
   new_goal_com.addEventListener("click", com_btn_closure(new_goal_com));
   new_goal_div.appendChild(new_goal_com);
 
   new_goal_uncom = document.createElement("div");
   new_goal_uncom.setAttribute("class", "uncomplete-btn");
+  new_goal_uncom.appendChild(make_tick());
   new_goal_uncom.addEventListener("click", uncom_btn_closure(new_goal_uncom));
   new_goal_div.appendChild(new_goal_uncom);
 
