@@ -41,6 +41,9 @@ function init_buttons(){
   cancel_btn.addEventListener('click', ()=>show_hide_form(create_form, false));
   create_btn = document.getElementById("form-create");
   create_btn.addEventListener('click', create_goal);
+  edit_form = document.getElementById("edit-form");
+  edit_cancel_btn = document.getElementById("edit-form-cancel");
+  edit_cancel_btn.addEventListener("click", ()=>show_hide_form(edit_form, false));
 }
 
 function create_init_goal(goal_dict) {
@@ -77,12 +80,6 @@ function create_goal_div(goal_name, goal_details, id = -1) {
   }
   new_goal_div.setAttribute("id", id);
 
-  new_goal_del = document.createElement("div");
-  new_goal_del.setAttribute("class", "base-btn delete-btn");
-  new_goal_del.appendChild(make_cross());
-  new_goal_del.addEventListener('click', del_btn_closure(new_goal_del));
-  new_goal_div.appendChild(new_goal_del);
-
   new_goal_com = document.createElement("div");
   new_goal_com.setAttribute("class", "base-btn complete-btn");
   new_goal_com.appendChild(make_tick());
@@ -95,6 +92,18 @@ function create_goal_div(goal_name, goal_details, id = -1) {
   new_goal_uncom.appendChild(make_tick());
   new_goal_uncom.addEventListener("click", uncom_btn_closure(new_goal_uncom));
   new_goal_div.appendChild(new_goal_uncom);
+
+  new_goal_edit = document.createElement("div");
+  new_goal_edit.setAttribute("class", "base-btn");
+  new_goal_edit.appendChild(make_edit());
+  new_goal_edit.addEventListener("click", edit_btn_closure(new_goal_edit));
+  new_goal_div.appendChild(new_goal_edit);
+
+  new_goal_del = document.createElement("div");
+  new_goal_del.setAttribute("class", "base-btn delete-btn");
+  new_goal_del.appendChild(make_cross());
+  new_goal_del.addEventListener('click', del_btn_closure(new_goal_del));
+  new_goal_div.appendChild(new_goal_del);
 
   new_goal_h1 = document.createElement('h1');
   new_goal_h1.setAttribute("class", "goal-text-field");
@@ -182,4 +191,39 @@ function swap_goal_dict(goal) {
   goal_details = goal.querySelector("p").innerText;
   is_completed = !(goal.querySelector(".complete-btn").style.display === "none");
   return {"goal_name": goal_name, "goal_details": goal_details, "is_completed": is_completed};
+}
+
+function edit_btn_closure(edit_btn) {
+  return ()=>edit_goal(edit_btn.parentNode);
+}
+
+function edit_goal(to_edit) {
+  edit_form = document.getElementById("edit-form");
+  show_hide_form(edit_form, true);
+  form_edit_btn = document.getElementById("edit-form-create");
+  form_edit_btn.addEventListener("click", ()=>change_goal(to_edit));
+}
+
+function change_goal(to_edit) {
+  
+  new_name_field = document.getElementById("edit-form-goal-name");
+  
+  new_name = new_name_field.value;
+  old_name_f = to_edit.querySelector("h1");
+  if (new_name === "") {new_name = old_name_f.innerText};
+  new_det_field = document.getElementById("edit-form-goal-details");
+  new_det = new_det_field.value;
+  old_det_f = to_edit.querySelector("p");
+  if (new_det === "") {new_det = old_det_f.innerText};
+
+  old_name_f.innerText = new_name;
+  old_det_f.innerText = new_det;
+
+  edit_index = goals_list.findIndex((x)=> x["goal_id"] == to_edit.id);
+  goals_list[edit_index]['goal_name'] = new_name;
+  goals_list[edit_index]['goal_details'] = new_det;
+  localStorage.setItem(project_id, JSON.stringify(goals_list));
+
+  edit_form = document.getElementById("edit-form");
+  show_hide_form(edit_form, false);
 }

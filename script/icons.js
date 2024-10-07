@@ -58,3 +58,13 @@ function make_arrow() {
   svg.appendChild(tri);
   return svg;
 }
+
+function make_edit() {
+  svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 300 300");
+  polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  polyline.setAttribute("points", "111.51 285.46 182.45 235.79 268.55 51.14 190.06 14.54 103.96 199.19 111.51 285.46 31.45 285.46");
+  // <polyline class="cls-1" points="111.51 285.46 182.45 235.79 268.55 51.14 190.06 14.54 103.96 199.19 111.51 285.46 31.45 285.46"/>
+  svg.appendChild(polyline);
+  return svg;
+}
