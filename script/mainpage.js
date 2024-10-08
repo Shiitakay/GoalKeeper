@@ -1,3 +1,4 @@
+to_edit = undefined; // Global used to edit a project
 project_list = []; // Modifed whereever localstorage is set
 next_project_id = 0; // Modified only in create_project_div
 /* localStorage should look like this
@@ -8,13 +9,6 @@ next_project_id = 0; // Modified only in create_project_div
     },
   ]
 */
-
-try {
-  project_list = JSON.parse(localStorage.getItem("projects"));
-  if (project_list === null) {
-    project_list = [];
-  }
-} catch (e) {}
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
@@ -22,6 +16,7 @@ function init() {
   init_project_list();
 }
 
+// Sets listeners for all static buttons on the page
 function init_buttons() {
   create_form = document.getElementById("creation-form")
   proj_btn = document.getElementById('new-project-btn');
@@ -33,11 +28,17 @@ function init_buttons() {
   edit_form = document.getElementById("edit-form");
   cancel_edit_btn = document.getElementById("edit-form-cancel");
   cancel_edit_btn.addEventListener("click", ()=>show_hide_form(edit_form, false));
+  edit_btn = document.getElementById("edit-form-create");
+  edit_btn.addEventListener("click", edit_proj);
 }
 
 // Creates project detail panels from the list in localstorage
 function init_project_list() {
-  if (project_list.length === 0) {return;}
+  project_list = JSON.parse(localStorage.getItem("projects"));
+  if (project_list === null) {
+    project_list = [];
+    return;
+  }
   project_container = document.getElementById('project-list');
   project_list.map((x)=>{
     project_container.appendChild(init_create_project_div(x["name"], x["id"])["div"])});
@@ -58,6 +59,9 @@ function create_project() {
   localStorage.setItem("projects", JSON.stringify(project_list));
 }
 
+// Creates a new project
+// Also sets the next goal field and progress bars
+// Only intended to be run when initialising the page
 function init_create_project_div(name_val, id) {
   proj_dict = create_project_div(name_val, id);
   proj_div = proj_dict["div"];
@@ -66,20 +70,15 @@ function init_create_project_div(name_val, id) {
   if (goal_list === null) {return proj_dict};
   //get first uncompleted goal
   first_goal_index = goal_list.findIndex((x)=>x["is_completed"] === false);
-  console.log(first_goal_index);
   if (first_goal_index != -1) {
-    goal_field = proj_dict["div"].querySelector("p");
+    goal_field = proj_div.querySelector("p");
     goal_field.innerText = goal_list[first_goal_index]["goal_name"];    
   }
-
   //set the progress meter
-  comp = " " + 100*(goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length) + "%, ";
-  col1 = " rgb(100, 155, 255) ";
-  col2 = " gray ";
-  // "linear-gradient(to right,"+col1+","+col1+comp+col2+comp+","+col2+") 10 1";
-  proj_div.style.borderImage =  "linear-gradient(to right,"+col1+","+col1+comp+col2+comp+col2+") 10 1";
-  // proj_div.style.borderImage = "linear-gradient(to right, #e66465, #e66465 " + comp + ", #9198e5 " + comp + ", #9198e5) 10 1";
-  console.log("linear-gradient(to right,"+col1+","+col1+comp+col2+comp+","+col2+") 10 1");
+  comp = 100*(goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length);
+  col1 = "rgb(100, 155, 255)";
+  col2 = "gray";
+  proj_div.style.borderImage = `linear-gradient(to right, ${col1}, ${col1} ${comp}%, ${col2} ${comp}%, ${col2}) 10 1`;
   return proj_dict;
 }
 
@@ -133,9 +132,8 @@ function create_project_div(name_val, id = -1) {
   };
 }
 
-
 // Creates a closure for details buttons
-// used for addEvenListener on details buttons
+// used for addEventListener on details buttons
 function details_btn_closure(to_redir) {
   to_redir;
   return ()=>{redir_to_proj(to_redir)};
@@ -168,18 +166,15 @@ function delete_proj(del_button) {
   localStorage.setItem("projects", JSON.stringify(project_list));
 }
 
+// Creates a small closure for eventListening
+// basically just sets a global
 function edit_btn_closure(edit_btn) {
-  return ()=>edit_proj(edit_btn);
+  return ()=>{  to_edit = edit_btn.parentNode;
+    show_hide_form(document.getElementById("edit-form"), true)};
 }
 
-function edit_proj(edit_btn) {
-  show_hide_form(document.getElementById("edit-form"), true);
-  form_edit_btn = document.getElementById("edit-form-create");
-  to_edit = edit_btn.parentNode;  
-  form_edit_btn.addEventListener("click", ()=>change_proj(to_edit));
-}
-
-function change_proj(to_edit) {
+// Alters a projects name, using global to_edit
+function edit_proj() {
   old_name_field = to_edit.querySelector("h1");
   new_name = document.getElementById("edit-form-name").value;
   if (new_name === "") {new_name = old_name_field.innerText;}
