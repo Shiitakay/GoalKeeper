@@ -1,9 +1,8 @@
-
-
 function return_to_mainpage() {
   location.replace("mainpage.html");
 }
 
+to_edit = undefined;
 next_goal_id = 0;
 const params = new URLSearchParams(window.location.search);
 const project_id = params.get("project-id");
@@ -23,7 +22,10 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
   init_buttons();
-  console.log(goals_list);
+  init_goals();
+}
+
+function init_goals() {
   if (goals_list === null) {
     goals_list = [];
   } else {
@@ -44,31 +46,38 @@ function init_buttons(){
   edit_form = document.getElementById("edit-form");
   edit_cancel_btn = document.getElementById("edit-form-cancel");
   edit_cancel_btn.addEventListener("click", ()=>show_hide_form(edit_form, false));
+  edit_btn = document.getElementById("edit-form-create");
+  edit_btn.addEventListener("click", edit_goal);
 }
 
+// Creates a goal and sets its completion status depending on localStorage
+// Only intended to be called from init functions
 function create_init_goal(goal_dict) {
   new_goal_dict = create_goal_div(goal_dict["goal_name"], goal_dict["goal_details"], goal_dict["goal_id"]);
-  document.getElementById("uncompleted-list").appendChild(new_goal_dict["div"]);
   if (goal_dict["is_completed"]) {
     complete_goal(new_goal_dict["div"].querySelector(".complete-btn"), false);
   }
 }
 
+// Checks fields, then creates a new goal
+// and sets it in localStorage
 function create_goal() {
   goal_name = document.getElementById("form-goal-name").value;
-  if (goal_name === "") {goal_name = "placeholder"}
+  if (goal_name === "") {goal_name = "Goal " + next_goal_id;}
   goal_details = document.getElementById("form-goal-details").value;
-  if (goal_details === "") {goal_details = "placeholder"};
+  if (goal_details === "") {goal_details = "Add a description to your goal!"};
   new_goal_dict = create_goal_div(goal_name, goal_details);
-  document.getElementById("uncompleted-list").appendChild(new_goal_dict["div"]);
   goals_list.push({
     "goal_id": new_goal_dict["id"], 
     "goal_name": goal_name, 
     "goal_details": goal_details, 
     "is_completed": false});
   localStorage.setItem(project_id, JSON.stringify(goals_list));
+  show_hide_form(document.getElementById("creation-form"), false);
 }
 
+// Creates a new goal element on the webpage,
+// and adds it to the uncompleted list
 function create_goal_div(goal_name, goal_details, id = -1) {
   new_goal_div = document.createElement("div");
   new_goal_div.setAttribute("class", "goal-block");
@@ -117,6 +126,8 @@ function create_goal_div(goal_name, goal_details, id = -1) {
   else {new_goal_p.innerText = goal_details;}
   new_goal_div.appendChild(new_goal_p);
 
+  document.getElementById("uncompleted-list").appendChild(new_goal_div);
+
   return {
     "id": id,
     "goal_name": goal_name,
@@ -155,7 +166,7 @@ function uncom_btn_closure(to_uncom) {
   return ()=>uncomplete_goal(to_uncom);
 }
 
-// Marks a goal and uncomplete, moving it between lists
+// Marks a goal as uncomplete, moving it between lists
 // also changes visibilty of complete and uncomplete buttons
 function uncomplete_goal(to_uncom) {
   swap_lists(to_uncom, true);
@@ -186,26 +197,13 @@ function swap_lists(to_swap, completed) {
   localStorage.setItem(project_id, JSON.stringify(goals_list));
 }
 
-function swap_goal_dict(goal) {
-  goal_name = goal.querySelector("h1").innerText;
-  goal_details = goal.querySelector("p").innerText;
-  is_completed = !(goal.querySelector(".complete-btn").style.display === "none");
-  return {"goal_name": goal_name, "goal_details": goal_details, "is_completed": is_completed};
-}
-
 function edit_btn_closure(edit_btn) {
-  return ()=>edit_goal(edit_btn.parentNode);
+  return ()=>{to_edit = edit_btn.parentNode; show_hide_form(edit_form, true);};
 }
 
-function edit_goal(to_edit) {
-  edit_form = document.getElementById("edit-form");
-  show_hide_form(edit_form, true);
-  form_edit_btn = document.getElementById("edit-form-create");
-  form_edit_btn.addEventListener("click", ()=>change_goal(to_edit));
-}
-
-function change_goal(to_edit) {
-  
+// Edits the global to_edit goal node's fields
+// based on whats present in the edit forms input 
+function edit_goal() {
   new_name_field = document.getElementById("edit-form-goal-name");
   
   new_name = new_name_field.value;
