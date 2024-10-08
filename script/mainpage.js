@@ -57,6 +57,7 @@ function create_project() {
 
   project_list.push({"id": new_dict["id"], "name": new_dict["name"]});
   localStorage.setItem("projects", JSON.stringify(project_list));
+  show_hide_form(document.getElementById("creation-form"), false);
 }
 
 // Creates a new project

@@ -73,6 +73,7 @@ function create_goal() {
     "goal_details": goal_details, 
     "is_completed": false});
   localStorage.setItem(project_id, JSON.stringify(goals_list));
+  show_hide_form(document.getElementById("creation-form"), false);
 }
 
 // Creates a new goal element on the webpage,
