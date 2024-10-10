@@ -1,6 +1,8 @@
 to_edit = undefined; // Global used to edit a project
 project_list = []; // Modifed whereever localstorage is set
 next_project_id = 0; // Modified only in create_project_div
+anim_list = [];
+anim_timer = undefined;
 /* localStorage should look like this
   [
     {
@@ -14,6 +16,7 @@ document.addEventListener('DOMContentLoaded', init);
 function init() {
   init_buttons();
   init_project_list();
+  anim_timer = setInterval(update_anims, 17);
 }
 
 // Sets listeners for all static buttons on the page
@@ -76,10 +79,16 @@ function init_create_project_div(name_val, id) {
     goal_field.innerText = goal_list[first_goal_index]["goal_name"];    
   }
   //set the progress meter
-  comp = 100*(goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length);
-  col1 = "rgb(100, 155, 255)";
-  col2 = "gray";
-  proj_div.style.borderImage = `linear-gradient(to right, ${col1}, ${col1} ${comp}%, ${col2} ${comp}%, ${col2}) 10 1`;
+  completion = (goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length);
+  anim_list.push({"div":proj_div, "comp": completion});
+  // anim = create_progress_animation(proj_div, )
+  // to_clear = setInterval(anim, 17, setInterval(anim, 17));
+  // clearInterval(to_clear);
+  //anim_closure(proj_div, (goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length))();
+  // comp = 100*(goal_list.filter((x)=>x["is_completed"] == true).length / goal_list.length);
+  // col1 = "rgb(100, 155, 255)";
+  // col2 = "gray";
+  // proj_div.style.borderImage = `linear-gradient(to right, ${col1}, ${col1} ${comp}%, ${col2} ${comp}%, ${col2}) 10 1`;
   return proj_dict;
 }
 
@@ -184,4 +193,39 @@ function edit_proj() {
   proj_index = project_list.findIndex((x) => x["id"] == to_edit.id);
   project_list[proj_index]["name"] = new_name;
   localStorage.setItem("projects", JSON.stringify(project_list));
+}
+
+// Updates all progress bar animations
+// Called with global interval anim_timer,
+// Clears interval when anims are complete 
+function update_anims() {
+  if (update_anims.count == undefined) {
+    update_anims.count = 0;
+  }
+  update_anims.count += 1;
+  anim_list.map((x) => {
+    if (update_anim(x.div, x.comp, update_anims.count)) {
+      index = anim_list.indexOf(x);
+      anim_list.splice(index, 1);
+    }
+  });
+  if (anim_list.length === 0) {
+    clearInterval(anim_timer);
+  }
+}
+
+// Updates an individual goal details progress bar animation
+// Returns true/false if the animation is completed
+function update_anim(to_update, comp, count) {
+  curr_width = 0.007 * count;
+  curr_percent = comp * (1 + cube(curr_width-1)); //start fast, ease in
+  curr_comp = 100*curr_percent;
+  col1 = "rgb(100, 155, 255)";
+  col2 = "gray";
+  to_update.style.borderImage = `linear-gradient(to right, ${col1}, ${col1} ${curr_comp}%, ${col2} ${curr_comp}%, ${col2}) 10 1`;
+  return curr_percent > comp;
+}
+
+function cube(n) {
+  return n*n*n;
 }
